@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.BlockMapper">
+    <resultMap id="BaseResultMap" type="com.example.po.Block">
+        <id column="blockhash" jdbcType="CHAR" property="blockhash"/>
+        <result column="height" jdbcType="INTEGER" property="height"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+        <result column="size" jdbcType="INTEGER" property="size"/>
+        <result column="difficulty" jdbcType="DOUBLE" property="difficulty"/>
+        <result column="weight" jdbcType="REAL" property="weight"/>
+        <result column="next_block" jdbcType="CHAR" property="nextBlock"/>
+        <result column="prev_block" jdbcType="CHAR" property="prevBlock"/>
+        <result column="transacation" jdbcType="INTEGER" property="transacation"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.example.dto.BlockListDto">
+        <result column="height" jdbcType="INTEGER" property="height"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+        <result column="size" jdbcType="INTEGER" property="size"/>
+        <result column="transacation" jdbcType="INTEGER" property="transacation"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        blockhash, height, time, size, difficulty, weight, next_block, prev_block, transacation
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from block
+        where blockhash = #{blockhash,jdbcType=CHAR}
+    </select>
+
+    <select id="getEndBlockHash" resultMap="BaseResultMap">
+        select * from block GROUP BY height DESC LIMIT 1
+
+    </select>
+
+    <select id="getBlance" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT SUM(amount) from tx_detall
+        where address = #{address}
+    </select>
+
+
+    <select id="getBlockByHash" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from block
+        where blockhash = #{blockhash,jdbcType=CHAR}
+    </select>
+
+    <select id="getBlockByHeight" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from block
+        where height = #{height,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="selectRecentBlocks" resultMap="BaseResultMap2">
+        select
+        <include refid="Base_Column_List"/>
+        from block
+        order by height desc
+        limit 5
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from block
+        where blockhash = #{blockhash,jdbcType=CHAR}
+    </delete>
+    <insert id="insert" parameterType="com.example.po.Block">
+        insert into block (blockhash, height, time,
+        size, difficulty, weight,
+        next_block, prev_block, transacation
+        )
+        values (#{blockhash,jdbcType=CHAR}, #{height,jdbcType=INTEGER}, #{time,jdbcType=TIMESTAMP},
+        #{size,jdbcType=INTEGER}, #{difficulty,jdbcType=DOUBLE}, #{weight,jdbcType=REAL},
+        #{nextBlock,jdbcType=CHAR}, #{prevBlock,jdbcType=CHAR}, #{transacation,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.example.po.Block">
+        insert into block
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="blockhash != null">
+                blockhash,
+            </if>
+            <if test="height != null">
+                height,
+            </if>
+            <if test="time != null">
+                time,
+            </if>
+            <if test="size != null">
+                size,
+            </if>
+            <if test="difficulty != null">
+                difficulty,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+            <if test="nextBlock != null">
+                next_block,
+            </if>
+            <if test="prevBlock != null">
+                prev_block,
+            </if>
+            <if test="transacation != null">
+                transacation,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="blockhash != null">
+                #{blockhash,jdbcType=CHAR},
+            </if>
+            <if test="height != null">
+                #{height,jdbcType=INTEGER},
+            </if>
+            <if test="time != null">
+                #{time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="size != null">
+                #{size,jdbcType=INTEGER},
+            </if>
+            <if test="difficulty != null">
+                #{difficulty,jdbcType=DOUBLE},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=REAL},
+            </if>
+            <if test="nextBlock != null">
+                #{nextBlock,jdbcType=CHAR},
+            </if>
+            <if test="prevBlock != null">
+                #{prevBlock,jdbcType=CHAR},
+            </if>
+            <if test="transacation != null">
+                #{transacation,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.po.Block">
+        update block
+        <set>
+            <if test="height != null">
+                height = #{height,jdbcType=INTEGER},
+            </if>
+            <if test="time != null">
+                time = #{time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="size != null">
+                size = #{size,jdbcType=INTEGER},
+            </if>
+            <if test="difficulty != null">
+                difficulty = #{difficulty,jdbcType=DOUBLE},
+            </if>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=REAL},
+            </if>
+            <if test="nextBlock != null">
+                next_block = #{nextBlock,jdbcType=CHAR},
+            </if>
+            <if test="prevBlock != null">
+                prev_block = #{prevBlock,jdbcType=CHAR},
+            </if>
+            <if test="transacation != null">
+                transacation = #{transacation,jdbcType=INTEGER},
+            </if>
+        </set>
+        where blockhash = #{blockhash,jdbcType=CHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.po.Block">
+        update block
+        set height = #{height,jdbcType=INTEGER},
+        time = #{time,jdbcType=TIMESTAMP},
+        size = #{size,jdbcType=INTEGER},
+        difficulty = #{difficulty,jdbcType=DOUBLE},
+        weight = #{weight,jdbcType=REAL},
+        next_block = #{nextBlock,jdbcType=CHAR},
+        prev_block = #{prevBlock,jdbcType=CHAR},
+        transacation = #{transacation,jdbcType=INTEGER}
+        where blockhash = #{blockhash,jdbcType=CHAR}
+    </update>
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.DetallMapper">
+    <resultMap id="BaseResultMap" type="com.example.po.Detall">
+        <id column="tx_detall_id" jdbcType="INTEGER" property="txDetallId"/>
+        <result column="adress" jdbcType="VARCHAR" property="adress"/>
+        <result column="amount" jdbcType="DOUBLE" property="amount"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="txhash" jdbcType="CHAR" property="txhash"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        tx_detall_id, adress, amount, type, txhash
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tx_detall
+        where tx_detall_id = #{txDetallId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getDetailByAddress" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tx_detall
+        where adress = #{address,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getAmount" parameterType="java.lang.String" resultType="java.lang.Double">
+        select sum(amount) from tx_detall where txhash = #{txhash}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from tx_detall
+        where tx_detall_id = #{txDetallId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.example.po.Detall">
+        insert into tx_detall (adress, amount,
+        type, txhash)
+        values (#{adress,jdbcType=VARCHAR}, #{amount,jdbcType=DOUBLE},
+        #{type,jdbcType=TINYINT}, #{txhash,jdbcType=CHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.example.po.Detall">
+        insert into tx_detall
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="adress != null">
+                adress,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="txhash != null">
+                txhash,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="adress != null">
+                #{adress,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DOUBLE},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="txhash != null">
+                #{txhash,jdbcType=CHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.po.Detall">
+        update tx_detall
+        <set>
+            <if test="adress != null">
+                adress = #{adress,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DOUBLE},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="txhash != null">
+                txhash = #{txhash,jdbcType=CHAR},
+            </if>
+        </set>
+        where tx_detall_id = #{txDetallId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.example.po.Detall">
+        update tx_detall
+        set amount = #{amount,jdbcType=DOUBLE},
+        txhash = #{txhash,jdbcType=CHAR}
+        where adress = #{adress,jdbcType=VARCHAR} and type = #{type,jdbcType=TINYINT}
+    </update>
+</mapper>
